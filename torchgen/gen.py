@@ -19,7 +19,7 @@ from typing import (
 )
 
 import yaml
-from typing_extensions import Literal
+from typing import Literal
 
 import torchgen.api.dispatcher as dispatcher
 import torchgen.api.meta as meta
