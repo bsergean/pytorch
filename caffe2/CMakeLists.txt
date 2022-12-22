@@ -303,7 +303,10 @@ if(NOT INTERN_BUILD_MOBILE)
   #     have the right protobuf version as well as linking to libprotobuf.a.
   target_link_libraries(caffe2_protos PUBLIC protobuf::libprotobuf)
   if(NOT BUILD_SHARED_LIBS)
-    install(TARGETS caffe2_protos ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+    install(TARGETS caffe2_protos
+                    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+                    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
   endif()
 endif()
 
@@ -641,7 +644,10 @@ if(USE_CUDA)
 
   target_link_libraries(caffe2_nvrtc ${CUDA_NVRTC} ${CUDA_CUDA_LIB} ${CUDA_NVRTC_LIB} ${DELAY_LOAD_FLAGS})
   target_include_directories(caffe2_nvrtc PRIVATE ${CUDA_INCLUDE_DIRS} ${CMAKE_BINARY_DIR})
-  install(TARGETS caffe2_nvrtc DESTINATION "${TORCH_INSTALL_LIB_DIR}")
+  install(TARGETS caffe2_nvrtc
+          RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+          ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+          LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
   if(USE_NCCL)
     list(APPEND Caffe2_GPU_SRCS
       ${TORCH_SRC_DIR}/csrc/cuda/nccl.cpp)
@@ -693,7 +699,10 @@ if(USE_ROCM)
   add_library(caffe2_nvrtc SHARED ${ATen_NVRTC_STUB_SRCS})
   target_link_libraries(caffe2_nvrtc ${PYTORCH_HIP_HCC_LIBRARIES} ${ROCM_HIPRTC_LIB})
   target_compile_definitions(caffe2_nvrtc PRIVATE USE_ROCM __HIP_PLATFORM_HCC__)
-  install(TARGETS caffe2_nvrtc DESTINATION "${TORCH_INSTALL_LIB_DIR}")
+  install(TARGETS caffe2_nvrtc
+          RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+          ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+          LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
 if(NOT NO_API AND NOT BUILD_LITE_INTERPRETER)
@@ -973,7 +982,10 @@ elseif(USE_CUDA)
           "${CUDA_TOOLKIT_ROOT_DIR}/lib64/libculibos.a" dl)
     endif()
     set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/../aten/src/ATen/native/cuda/LinearAlgebraStubs.cpp PROPERTIES COMPILE_FLAGS "-DBUILD_LAZY_CUDA_LINALG")
-    install(TARGETS torch_cuda_linalg DESTINATION "${TORCH_INSTALL_LIB_DIR}")
+    install(TARGETS torch_cuda_linalg
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
   endif()
 
   if(USE_PRECOMPILED_HEADERS)
@@ -1488,14 +1500,20 @@ endif()
 
 caffe2_interface_library(torch torch_library)
 
-install(TARGETS torch_cpu torch_cpu_library EXPORT Caffe2Targets DESTINATION "${TORCH_INSTALL_LIB_DIR}")
+install(TARGETS torch_cpu torch_cpu_library EXPORT Caffe2Targets
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(USE_CUDA)
   install(TARGETS torch_cuda torch_cuda_library EXPORT Caffe2Targets DESTINATION "${TORCH_INSTALL_LIB_DIR}")
 elseif(USE_ROCM)
   install(TARGETS torch_hip torch_hip_library EXPORT Caffe2Targets DESTINATION "${TORCH_INSTALL_LIB_DIR}")
 endif()
-install(TARGETS torch torch_library EXPORT Caffe2Targets DESTINATION "${TORCH_INSTALL_LIB_DIR}")
+install(TARGETS torch torch_library EXPORT Caffe2Targets
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 target_link_libraries(torch PUBLIC torch_cpu_library)
 
@@ -1594,7 +1612,10 @@ if(BUILD_SHARED_LIBS)
     target_link_libraries(torch_global_deps TBB::tbb)
   endif()
 
-  install(TARGETS torch_global_deps DESTINATION "${TORCH_INSTALL_LIB_DIR}")
+  install(TARGETS torch_global_deps
+          RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+          ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+          LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
 # ---[ Caffe2 HIP sources.
